@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  test:
+    working_directory: ~
+    docker:
+      - image: golang:1.12-alpine
+
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: go test ./... --coverprofile=/dev/stdout
+      - store_test_results:
+          path: /tmp/test-results
