@@ -1,7 +1,10 @@
 # lime
 lime is a small CLI library for Go.
 
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dotvezz/lime)](https://goreportcard.com/report/github.com/dotvezz/lime)
+[![codecov](https://codecov.io/gh/dotvezz/lime/branch/master/graph/badge.svg)](https://codecov.io/gh/dotvezz/lime)
+[![CircleCI](https://circleci.com/gh/dotvezz/lime/tree/master.svg?style=svg)](https://circleci.com/gh/dotvezz/lime/tree/master)
 
 ## Features
 
