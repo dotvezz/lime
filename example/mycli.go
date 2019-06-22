@@ -3,13 +3,34 @@ package main
 import (
 	"errors"
 	"fmt"
-	"lime/cli"
+	"github.com/dotvezz/lime"
+	"github.com/dotvezz/lime/cli"
 )
 
-var commands = []cli.Command{
+var command = lime.Command{
+	Keyword: "tell",
+	Commands: []lime.Command{
+		{
+			Keyword: "lie",
+			Func: func(_ []string) error {
+				fmt.Println("The author of this cli likes to eat oranges.")
+				return nil
+			},
+		},
+		{
+			Keyword: "truth",
+			Func: func(_ []string) error {
+				fmt.Println("The author of this cli likes to eat apples.")
+				return nil
+			},
+		},
+	},
+}
+
+var commands = []lime.Command{
 	{
 		Keyword: "tell",
-		Commands: []cli.Command{
+		Commands: []lime.Command{
 			{
 				Keyword: "lie",
 				Func: func(_ []string) error {
@@ -29,7 +50,7 @@ var commands = []cli.Command{
 	{
 		Keyword:     "repeat",
 		Description: "repeats all the words after the command",
-		Examples: []cli.Example{
+		Examples: []lime.Example{
 			{
 				Input:       "mycli repeat the quick brown fox",
 				Explanation: `outputs "[the quick brown fox]"`,
