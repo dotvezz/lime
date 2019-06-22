@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dotvezz/lime"
+	limeErrors "github.com/dotvezz/lime/errors"
 	"github.com/dotvezz/lime/options"
 	"io"
 	"log"
@@ -170,6 +171,18 @@ func TestCLI_Run(t *testing.T) {
 		lime.Command{
 			Keyword: "noFunc",
 		},
+		lime.Command{
+			Keyword: "nested",
+			Commands:[]lime.Command{
+				{
+					Keyword: "test",
+					Func: func(_ []string) error {
+						fmt.Println("success")
+						return nil
+					},
+				},
+			},
+		},
 	)
 
 	// Ensure the failing command behaves as expected
@@ -192,7 +205,7 @@ func TestCLI_Run(t *testing.T) {
 		err := c.Run()
 
 		if err != nil {
-			t.Error("the `Run` returned an error for the command that should succeed")
+			t.Error("the `Run` method returned an error for a command that should succeed")
 		}
 	}
 
@@ -202,11 +215,84 @@ func TestCLI_Run(t *testing.T) {
 		output, err := captureOutput(c.Run)
 
 		if err != nil {
-			t.Error("the `Run` returned an error for a command that should succeed")
+			t.Error("the `Run` method returned an error for a command that should succeed")
 		}
 
 		if output != fmt.Sprintln("[blah]") {
 			t.Error("the `Run` command ran but its output was unexpected")
+		}
+	}
+
+	// Ensure the command output and injected args behave as expected for nested funcs
+	{
+		os.Args = []string{"myCli", "repeat", "blah"}
+		output, err := captureOutput(c.Run)
+
+		if err != nil {
+			t.Error("the `Run` method returned an error for a command that should succeed")
+		}
+
+		if output != fmt.Sprintln("[blah]") {
+			t.Error("the `Run` command ran but its output was unexpected")
+		}
+	}
+
+	// Ensure an error is returned when there is no func for the associated command
+	{
+		os.Args = []string{"myCli", "noFunc"}
+		err := c.Run()
+
+		if err == nil {
+			t.Error("the `Run` method did not return an error for the command with a nil func")
+		}
+
+		if err != nil && err.Error() != limeErrors.ErrNoFunc.Error() {
+			t.Error("the `Run` method returned the wrong error for the command with a nil func")
+		}
+	}
+
+	// Ensure an error is returned when there is no command to run and interactive shell is disabled
+	{
+		_ = c.SetOptions(options.NoShell)
+		os.Args = []string{"myCli"}
+		err := c.Run()
+
+		if err == nil {
+			t.Error("the `Run` method did not return an error with no input an shell disabled")
+		}
+
+		if err != nil && err.Error() != limeErrors.ErrNoInput.Error() {
+			t.Error("the `Run` method returned the wrong error for the command with a nil func")
+		}
+	}
+
+	// Ensure an error is returned when there is no match found
+	{
+		_ = c.SetOptions(options.NoShell)
+		os.Args = []string{"myCli", "invalid"}
+		err := c.Run()
+
+		if err == nil {
+			t.Error("the `Run` method did not return an error when there should be no matching command")
+		}
+
+		if err != nil && err.Error() != limeErrors.ErrNoMatch.Error() {
+			t.Error("the `Run` method returned the wrong error when there should be no matching command")
+		}
+	}
+
+	// Ensure an error is returned when there is no command to run and interactive shell is disabled
+	{
+		_ = c.SetOptions(options.NoShell)
+		os.Args = []string{"myCli", "nested", "test"}
+		output, err := captureOutput(c.Run)
+
+		if err != nil {
+			t.Error("the `Run` method returned an error for the nested command")
+		}
+
+		if output != fmt.Sprintln("success") {
+			t.Error("the `Run` method did not run the nested command")
 		}
 	}
 }

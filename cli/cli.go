@@ -86,10 +86,6 @@ func (cli cli) Run() error {
 // match finds a matching command for a given set of arguments.
 // Also returns the nesting depth of the matched command.
 func match(commands []lime.Command, args []string, depth int) (*lime.Command, int, error) {
-	if len(args) == 0 {
-		return nil, depth, errors.ErrNoMatch
-	}
-
 	var c *lime.Command
 	for i := range commands {
 		c = &commands[i]
