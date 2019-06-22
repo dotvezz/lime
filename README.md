@@ -7,8 +7,7 @@ If you would like to suggest a feature for lime to support, please [open an issu
 
 ### Interactive Shell
 
-By default, lime gives your CLI an interactive shell. In a future release, one goal is to add
-support for running scripts for the custom shell
+By default, lime gives your CLI an interactive shell. In a future release, one goal is for the shell to run as an interpreter for custom scripts.
 
 ### Basic Command Handling
 
@@ -66,6 +65,21 @@ var command = lime.Command{
 #### Command Help, Usage, Description
 
 When building your CLI with lime, you can provide usage examples as well as help and descriptions.
+
+## Goals
+
+The lime project has a number of goals. Some goals are general and intended as guidelines to the project's design, and others are specific features that it is intended to support at some point in the future.
+
+### Guidelines
+
+- Make it simple to write a powerful CLI without needing to read a bunch of documentation.
+- Take as little control away from a CLI developer as possible.
+
+### Feature Wish List
+
+- Ability for the interactive shell mode run as an interpreter for custom scripts.
+- Support for command-line flags
+- Support for `bash` auto-completion
 
 ## Release Status and Interface Stability
 
