@@ -173,7 +173,7 @@ func TestCLI_Run(t *testing.T) {
 		},
 		lime.Command{
 			Keyword: "nested",
-			Commands:[]lime.Command{
+			Commands: []lime.Command{
 				{
 					Keyword: "test",
 					Func: func(_ []string) error {
@@ -298,7 +298,6 @@ func TestCLI_Run(t *testing.T) {
 }
 
 func TestCLI_RunShell(t *testing.T) {
-	t.Skip("not implemented yet")
 	c := New()
 	_ = c.SetCommands(
 		lime.Command{
@@ -309,8 +308,9 @@ func TestCLI_RunShell(t *testing.T) {
 		},
 	)
 
-	// Ensure the CLI enters and exits shell mode with no args
-	//os.Args = []string{"myCli"}
+	//Ensure the CLI enters and exits shell mode with no args
+	os.Args = []string{"myCli"}
+	go c.Run()
 }
 
 // Modified from https://medium.com/@hau12a1/golang-capturing-log-println-and-fmt-println-output-770209c791b4
