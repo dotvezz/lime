@@ -80,6 +80,7 @@ The lime project has a number of goals. Some goals are general and intended as g
 ### Feature Wish List
 
 - Ability for the interactive shell mode run as an interpreter for custom scripts.
+- Support for dynamic prompts in the interactive shell mode
 - Support for command-line flags
 - Support for `bash` auto-completion
 
