@@ -1,6 +1,8 @@
 # lime
 lime is a small CLI library for Go.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/dotvezz/lime)](https://goreportcard.com/report/github.com/dotvezz/lime)
+
 ## Features
 
 If you would like to suggest a feature for lime to support, please [open an issue](https://github.com/dotvezz/lime/issues) or submit a pull request for it.
@@ -78,6 +80,7 @@ The lime project has a number of goals. Some goals are general and intended as g
 ### Feature Wish List
 
 - Ability for the interactive shell mode run as an interpreter for custom scripts.
+- Support for dynamic prompts in the interactive shell mode
 - Support for command-line flags
 - Support for `bash` auto-completion
 
