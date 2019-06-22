@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-// The private struct which holds pointers to the cli's internal values
+// cli is the private struct which holds pointers to the cli's internal values
 type cli struct {
 	options  *lime.Option
 	commands *[]lime.Command
-	appName  *string
+	name     *string
 	prompt   *string
 	exitWord *string
 }
@@ -26,7 +26,7 @@ func New() lime.CLI {
 	return cli{
 		commands: new([]lime.Command),
 		options:  new(lime.Option),
-		appName:  new(string),
+		name:     new(string),
 		prompt:   &defaultPrompt,
 		exitWord: &defaultExitWord,
 	}
@@ -51,14 +51,17 @@ func (cli cli) SetCommands(commands ...lime.Command) error {
 	return nil
 }
 
+// SetName takes a string as the CLI application's name, used in some output
 func (cli cli) SetName(name string) {
-	*cli.appName = name
+	*cli.name = name
 }
 
+// SetPrompt takes a string as the CLI application's prompt, used in interactive shell mode
 func (cli cli) SetPrompt(prompt string) {
 	*cli.prompt = prompt
 }
 
+// SetExitWord takes a string as the keyword to exit the interactive shell
 func (cli cli) SetExitWord(exitWord string) {
 	*cli.exitWord = exitWord
 }
@@ -104,8 +107,8 @@ func match(commands []lime.Command, args []string, depth int) (*lime.Command, in
 func (cli cli) shell() error {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("entering shell mode")
-	if len(*cli.appName) > 1 {
-		fmt.Println("for", *cli.appName)
+	if len(*cli.name) > 1 {
+		fmt.Println("for", *cli.name)
 	} else {
 		fmt.Println()
 	}
