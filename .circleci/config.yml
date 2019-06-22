@@ -5,7 +5,7 @@ jobs:
   test:
     working_directory: ~
     docker:
-      - image: golang:1.12-alpine
+      - image: circleci/golang:1.12
     steps:
       - checkout
       - run:
