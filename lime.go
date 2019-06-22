@@ -1,6 +1,6 @@
 package lime
 
-// The public CLI interface exposed to packages consuming lime/cli
+// CLI is the public interface, which is exposed to packages consuming lime/cli
 type CLI interface {
 	SetOptions(opts ...Option) error
 	SetCommands(commands ...Command) error
@@ -10,7 +10,7 @@ type CLI interface {
 	SetExitWord(exitWord string)
 }
 
-// defines the structure of a cli command.
+// Command defines the structure of a cli command.
 type Command struct {
 	// The keyword which invokes this command
 	Keyword string
@@ -26,7 +26,7 @@ type Command struct {
 	Func CommandFunc
 }
 
-// defines the structure of a Examples entry
+// Example defines the structure of a Examples entry
 type Example struct {
 	// The example input
 	Input string
@@ -34,8 +34,8 @@ type Example struct {
 	Explanation string
 }
 
-// The signature of a function to run when a Command is invoked.
+// CommandFunc is the signature of a function to run when a Command is invoked.
 type CommandFunc func(args []string) error
 
-// A bit mask value for setting options on a CLI
+// Option is a bit mask value for setting options on a CLI
 type Option int64
