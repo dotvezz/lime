@@ -37,7 +37,7 @@ func New() lime.CLI {
 func (cli cli) SetOptions(opts ...lime.Option) error {
 	for _, option := range opts {
 		if options.IsValid(option) {
-			return errors.InvalidOption
+			return errors.ErrInvalidOption
 		}
 		*cli.options |= option
 	}
@@ -69,9 +69,8 @@ func (cli cli) Run() error {
 	if len(os.Args) == 1 {
 		if *cli.options&options.NoShell == 0 {
 			return cli.shell()
-		} else {
-			return errors.NoInput
 		}
+		return errors.ErrNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
 	if err != nil {
@@ -85,7 +84,7 @@ func (cli cli) Run() error {
 // Also returns the nesting depth of the matched command.
 func match(commands []lime.Command, args []string, depth int) (*lime.Command, int, error) {
 	if len(args) == 0 {
-		return nil, depth, errors.NoMatch
+		return nil, depth, errors.ErrNoMatch
 	}
 
 	var c *lime.Command
@@ -98,7 +97,7 @@ func match(commands []lime.Command, args []string, depth int) (*lime.Command, in
 			return c, depth, nil
 		}
 	}
-	return nil, depth, errors.NoMatch
+	return nil, depth, errors.ErrNoMatch
 }
 
 // shell launches the cli in an interactive shell
@@ -121,7 +120,7 @@ func (cli cli) shell() error {
 		args := strings.Split(input, " ")
 		c, depth, err := match(*cli.commands, args, 0)
 		if err != nil {
-			if err != errors.NoMatch || len(input) > 0 {
+			if err != errors.ErrNoMatch || len(input) > 0 {
 				fmt.Println(err)
 			}
 			continue
@@ -137,7 +136,7 @@ func (cli cli) shell() error {
 // exec runs the function
 func (cli cli) exec(c *lime.Command, depth int, args []string) error {
 	if c.Func == nil {
-		return errors.NoFunc
+		return errors.ErrNoFunc
 	}
 
 	return c.Func(args[depth+1:])

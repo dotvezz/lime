@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	// Disables the shell interface
+	// NoShell disables the shell interface
 	NoShell lime.Option = 1 << iota
 )
 
