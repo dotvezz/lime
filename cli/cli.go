@@ -12,7 +12,7 @@ import (
 
 // The private struct which holds pointers to the cli's internal values
 type cli struct {
-	options  *options.Option
+	options  *lime.Option
 	commands *[]lime.Command
 	appName  *string
 	prompt   *string
@@ -25,7 +25,7 @@ func New() lime.CLI {
 	defaultExitWord := "exit"
 	return cli{
 		commands: new([]lime.Command),
-		options:  new(options.Option),
+		options:  new(lime.Option),
 		appName:  new(string),
 		prompt:   &defaultPrompt,
 		exitWord: &defaultExitWord,
@@ -34,7 +34,7 @@ func New() lime.CLI {
 
 // SetOptions takes a variadic list of options and applies them to the cli
 // Returns an error if any of the options given are not valid
-func (cli cli) SetOptions(opts ...options.Option) error {
+func (cli cli) SetOptions(opts ...lime.Option) error {
 	for _, option := range opts {
 		if options.IsValid(option) {
 			return errors.InvalidOption
@@ -67,7 +67,7 @@ func (cli cli) SetExitWord(exitWord string) {
 func (cli cli) Run() error {
 	// Go to shell mode if it's not disabled and there are no args
 	if len(os.Args) == 1 {
-		if *cli.options&options.NoShell == 0 {
+		if *cli.options & options.NoShell == 0 {
 			return cli.shell()
 		} else {
 			return errors.NoInput

@@ -1,10 +1,8 @@
 package lime
 
-import "github.com/dotvezz/lime/options"
-
 // The public CLI interface exposed to packages consuming lime/cli
 type CLI interface {
-	SetOptions(opts ...options.Option) error
+	SetOptions(opts ...Option) error
 	SetCommands(commands ...Command) error
 	SetName(name string)
 	Run() error
@@ -38,3 +36,6 @@ type Example struct {
 
 // The signature of a function to run when a Command is invoked.
 type CommandFunc func(args []string) error
+
+// A bit mask value for setting options on a CLI
+type Option int64
