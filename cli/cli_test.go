@@ -12,6 +12,7 @@ import (
 	"os"
 	"sync"
 	"testing"
+	"time"
 )
 
 func TestCLI_New(t *testing.T) {
@@ -311,6 +312,7 @@ func TestCLI_RunShell(t *testing.T) {
 	//Ensure the CLI enters and exits shell mode with no args
 	os.Args = []string{"myCli"}
 	go c.Run()
+	time.Sleep(250 * time.Millisecond)
 }
 
 // Modified from https://medium.com/@hau12a1/golang-capturing-log-println-and-fmt-println-output-770209c791b4
