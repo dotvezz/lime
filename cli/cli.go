@@ -67,7 +67,7 @@ func (cli cli) SetExitWord(exitWord string) {
 func (cli cli) Run() error {
 	// Go to shell mode if it's not disabled and there are no args
 	if len(os.Args) == 1 {
-		if *cli.options & options.NoShell == 0 {
+		if *cli.options&options.NoShell == 0 {
 			return cli.shell()
 		} else {
 			return errors.NoInput
