@@ -1,6 +1,8 @@
 # lime
 lime is a small CLI library for Go.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/dotvezz/lime)](https://goreportcard.com/report/github.com/dotvezz/lime)
+
 ## Features
 
 If you would like to suggest a feature for lime to support, please [open an issue](https://github.com/dotvezz/lime/issues) or submit a pull request for it.
