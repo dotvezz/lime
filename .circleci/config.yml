@@ -1,14 +1,16 @@
 version: 2
+orbs:
+  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     working_directory: ~
     docker:
       - image: golang:1.12-alpine
-
+        env: CODECOV_TOKEN="a2fd6336-7a04-4b11-89e2-9e84a8d25218"
     steps:
       - checkout
       - run:
           name: Run Tests
-          command: go test ./... --coverprofile=/dev/stdout
-      - store_test_results:
-          path: /tmp/test-results
+          command: go test ./... --coverprofile=coverage.txt
+      - codecov/upload:
+          file: coverage.txt
