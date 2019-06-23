@@ -1,18 +1,15 @@
 package cli
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/dotvezz/lime"
 	limeErrors "github.com/dotvezz/lime/errors"
 	"github.com/dotvezz/lime/options"
 	"io"
-	"log"
 	"os"
 	"sync"
 	"testing"
-	"time"
 )
 
 func TestCLI_New(t *testing.T) {
@@ -186,6 +183,12 @@ func TestCLI_Run(t *testing.T) {
 		},
 	)
 
+	// Capture the input and output
+	inputReader, _, _ := os.Pipe()
+	outputReader, outputWriter, _ := os.Pipe()
+	os.Stdout = outputWriter
+	os.Stdin = inputReader
+
 	// Ensure the failing command behaves as expected
 	{
 		os.Args = []string{"myCli", "fail"}
@@ -213,27 +216,13 @@ func TestCLI_Run(t *testing.T) {
 	// Ensure the command output and injected args behave as expected
 	{
 		os.Args = []string{"myCli", "repeat", "blah"}
-		output, err := captureOutput(c.Run)
+		err := c.Run()
 
 		if err != nil {
 			t.Error("the `Run` method returned an error for a command that should succeed")
 		}
 
-		if output != fmt.Sprintln("[blah]") {
-			t.Error("the `Run` command ran but its output was unexpected")
-		}
-	}
-
-	// Ensure the command output and injected args behave as expected for nested funcs
-	{
-		os.Args = []string{"myCli", "repeat", "blah"}
-		output, err := captureOutput(c.Run)
-
-		if err != nil {
-			t.Error("the `Run` method returned an error for a command that should succeed")
-		}
-
-		if output != fmt.Sprintln("[blah]") {
+		if readString(outputReader) != fmt.Sprintln("[blah]") {
 			t.Error("the `Run` command ran but its output was unexpected")
 		}
 	}
@@ -269,7 +258,6 @@ func TestCLI_Run(t *testing.T) {
 
 	// Ensure an error is returned when there is no match found
 	{
-		_ = c.SetOptions(options.NoShell)
 		os.Args = []string{"myCli", "invalid"}
 		err := c.Run()
 
@@ -282,17 +270,16 @@ func TestCLI_Run(t *testing.T) {
 		}
 	}
 
-	// Ensure an error is returned when there is no command to run and interactive shell is disabled
+	// Ensure nested commands work
 	{
-		_ = c.SetOptions(options.NoShell)
 		os.Args = []string{"myCli", "nested", "test"}
-		output, err := captureOutput(c.Run)
+		err := c.Run()
 
 		if err != nil {
 			t.Error("the `Run` method returned an error for the nested command")
 		}
 
-		if output != fmt.Sprintln("success") {
+		if readString(outputReader) != fmt.Sprintln("success") {
 			t.Error("the `Run` method did not run the nested command")
 		}
 	}
@@ -307,38 +294,99 @@ func TestCLI_RunShell(t *testing.T) {
 				return nil
 			},
 		},
+		lime.Command{
+			Keyword: "error",
+			Func: func(_ []string) error {
+				return errors.New("failed successfully")
+			},
+		},
 	)
+	cc := c.(cli)
+
+	// Capture the input and output
+	inputReader, inputWriter, _ := os.Pipe()
+	outputReader, outputWriter, _ := os.Pipe()
+	os.Stdout = outputWriter
+	os.Stdin = inputReader
 
 	//Ensure the CLI enters and exits shell mode with no args
 	os.Args = []string{"myCli"}
-	go c.Run()
-	time.Sleep(250 * time.Millisecond)
-}
 
-// Modified from https://medium.com/@hau12a1/golang-capturing-log-println-and-fmt-println-output-770209c791b4
-func captureOutput(f func() error) (string, error) {
-	reader, writer, _ := os.Pipe()
-	stdout := os.Stdout
-	stderr := os.Stderr
-	defer func() {
-		os.Stdout = stdout
-		os.Stderr = stderr
-		log.SetOutput(os.Stderr)
-	}()
-	os.Stdout = writer
-	os.Stderr = writer
-	log.SetOutput(writer)
-	out := make(chan string)
-	wg := new(sync.WaitGroup)
+	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		var buf bytes.Buffer
+		_ = c.Run()
 		wg.Done()
-		_, _ = io.Copy(&buf, reader)
-		out <- buf.String()
 	}()
+
+	if readString(outputReader) != "entering shell mode\n> " {
+		t.Error("the shell mode initialization output was unexpected")
+	}
+
+	//test empty input
+	writeLine(inputWriter, "")
+	if readString(outputReader) != "> " {
+		t.Error("the shell mode new line was unexpected")
+	}
+
+	writeLine(inputWriter, "test")
+	if readString(outputReader) != "> " {
+		t.Error("the shell non-error, empty output new line was unexpected")
+	}
+
+	writeLine(inputWriter, "error")
+	if readString(outputReader) != "failed successfully\n> " {
+		t.Error("an error from a `lime.CommandFunc` was not output in the shell")
+	}
+
+	writeLine(inputWriter, "invalid")
+	if readString(outputReader) != fmt.Sprintf("%s\n> ", limeErrors.ErrNoMatch.Error()) {
+		t.Error("a `limeErrors.ErrNoMatch` was not output in the shell")
+	}
+
+	writeLine(inputWriter, *cc.exitWord)
+
 	wg.Wait()
-	err := f()
-	_ = writer.Close()
-	return <-out, err
+}
+
+
+func TestCLI_RunNamedShell(t *testing.T) {
+	c := New()
+	c.SetName("myCli")
+	cc := c.(cli)
+
+	// Capture the input and output
+	inputReader, inputWriter, _ := os.Pipe()
+	outputReader, outputWriter, _ := os.Pipe()
+	os.Stdout = outputWriter
+	os.Stdin = inputReader
+
+	//Ensure the CLI enters and exits shell mode with no args
+	os.Args = []string{"myCli"}
+
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		_ = c.Run()
+		wg.Done()
+	}()
+
+	if readString(outputReader) != "entering shell mode for myCli\n> " {
+		t.Error("the shell mode initialization output was unexpected")
+	}
+
+	writeLine(inputWriter, *cc.exitWord)
+
+	wg.Wait()
+}
+
+func readString(reader io.Reader) string {
+	bs := make([]byte, 128)
+
+	n, _ := reader.Read(bs)
+	return string(bs[:n])
+}
+
+func writeLine(writer io.Writer, s string) {
+	_, _ = writer.Write([]byte(fmt.Sprintln(s)))
 }
