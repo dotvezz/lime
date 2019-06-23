@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dotvezz/lime"
-	limeErrors "github.com/dotvezz/lime/errors"
 	"github.com/dotvezz/lime/options"
 	"io"
 	"os"
@@ -236,7 +235,7 @@ func TestCLI_Run(t *testing.T) {
 			t.Error("the `Run` method did not return an error for the command with a nil func")
 		}
 
-		if err != nil && err.Error() != limeErrors.ErrNoFunc.Error() {
+		if err != nil && err.Error() != errNoFunc.Error() {
 			t.Error("the `Run` method returned the wrong error for the command with a nil func")
 		}
 	}
@@ -251,7 +250,7 @@ func TestCLI_Run(t *testing.T) {
 			t.Error("the `Run` method did not return an error with no input an shell disabled")
 		}
 
-		if err != nil && err.Error() != limeErrors.ErrNoInput.Error() {
+		if err != nil && err.Error() != errNoInput.Error() {
 			t.Error("the `Run` method returned the wrong error for the command with a nil func")
 		}
 	}
@@ -265,7 +264,7 @@ func TestCLI_Run(t *testing.T) {
 			t.Error("the `Run` method did not return an error when there should be no matching command")
 		}
 
-		if err != nil && err.Error() != limeErrors.ErrNoMatch.Error() {
+		if err != nil && err.Error() != errNoMatch.Error() {
 			t.Error("the `Run` method returned the wrong error when there should be no matching command")
 		}
 	}
@@ -340,7 +339,7 @@ func TestCLI_RunShell(t *testing.T) {
 	}
 
 	writeLine(inputWriter, "invalid")
-	if readString(outputReader) != fmt.Sprintf("%s\n> ", limeErrors.ErrNoMatch.Error()) {
+	if readString(outputReader) != fmt.Sprintf("%s\n> ", errNoMatch.Error()) {
 		t.Error("a `limeErrors.ErrNoMatch` was not output in the shell")
 	}
 

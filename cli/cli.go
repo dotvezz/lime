@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/dotvezz/lime"
-	"github.com/dotvezz/lime/errors"
 	"github.com/dotvezz/lime/options"
 	"os"
 	"strings"
@@ -37,7 +36,7 @@ func New() lime.CLI {
 func (cli cli) SetOptions(opts ...lime.Option) error {
 	for _, option := range opts {
 		if options.IsValid(option) {
-			return errors.ErrInvalidOption
+			return errInvalidOption
 		}
 		*cli.options |= option
 	}
@@ -73,7 +72,7 @@ func (cli cli) Run() error {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
-		return errors.ErrNoInput
+		return errNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
 	if err != nil {
@@ -96,7 +95,7 @@ func match(commands []lime.Command, args []string, depth int) (*lime.Command, in
 			return c, depth, nil
 		}
 	}
-	return nil, depth, errors.ErrNoMatch
+	return nil, depth, errNoMatch
 }
 
 // shell launches the cli in an interactive shell
@@ -119,7 +118,7 @@ func (cli cli) shell() {
 		args := strings.Split(string(input), " ")
 		c, depth, err := match(*cli.commands, args, 0)
 		if err != nil {
-			if err != errors.ErrNoMatch || len(input) > 0 {
+			if err != errNoMatch || len(input) > 0 {
 				fmt.Println(err)
 			}
 			continue
@@ -134,7 +133,7 @@ func (cli cli) shell() {
 // exec runs the function
 func (cli cli) exec(c *lime.Command, depth int, args []string) error {
 	if c.Func == nil {
-		return errors.ErrNoFunc
+		return errNoFunc
 	}
 
 	return c.Func(args[depth+1:])
