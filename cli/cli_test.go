@@ -335,7 +335,7 @@ func TestCLI_RunShell(t *testing.T) {
 
 	writeLine(inputWriter, "error")
 	if readString(outputReader) != "failed successfully\n> " {
-		t.Error("an error from a `lime.CommandFunc` was not output in the shell")
+		t.Error("an error from a `lime.Func` was not output in the shell")
 	}
 
 	writeLine(inputWriter, "invalid")

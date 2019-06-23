@@ -23,7 +23,7 @@ type Command struct {
 	// Nested commands
 	Commands []Command
 	// The function to run when this command is invoked
-	Func CommandFunc
+	Func Func
 }
 
 // Example defines the structure of a Examples entry
@@ -34,8 +34,8 @@ type Example struct {
 	Explanation string
 }
 
-// CommandFunc is the signature of a function to run when a Command is invoked.
-type CommandFunc func(args []string) error
+// Func is the signature of a function to run when a Command is invoked.
+type Func func(args []string) error
 
 // Option is a bit mask value for setting options on a CLI
 type Option int64

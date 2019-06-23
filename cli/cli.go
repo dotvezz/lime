@@ -1,12 +1,9 @@
 package cli
 
 import (
-	"bufio"
-	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/options"
 	"os"
-	"strings"
 )
 
 // cli is the private struct which holds pointers to the cli's internal values
@@ -79,62 +76,5 @@ func (cli cli) Run() error {
 		return err
 	}
 
-	return cli.exec(c, depth, os.Args)
-}
-
-// match finds a matching command for a given set of arguments.
-// Also returns the nesting depth of the matched command.
-func match(commands []lime.Command, args []string, depth int) (*lime.Command, int, error) {
-	var c *lime.Command
-	for i := range commands {
-		c = &commands[i]
-		if c.Keyword == args[0] {
-			if len(args) > 1 && len(c.Commands) > 0 {
-				return match(c.Commands, args[1:], depth+1)
-			}
-			return c, depth, nil
-		}
-	}
-	return nil, depth, errNoMatch
-}
-
-// shell launches the cli in an interactive shell
-func (cli cli) shell() {
-	fmt.Print("entering shell mode")
-	if len(*cli.name) > 1 {
-		fmt.Println(" for", *cli.name)
-	} else {
-		fmt.Println()
-	}
-
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		fmt.Printf("%s ", *cli.prompt)
-		scanner.Scan()
-		input := scanner.Text()
-		if string(input) == *cli.exitWord {
-			break
-		}
-		args := strings.Split(string(input), " ")
-		c, depth, err := match(*cli.commands, args, 0)
-		if err != nil {
-			if err != errNoMatch || len(input) > 0 {
-				fmt.Println(err)
-			}
-			continue
-		}
-		err = cli.exec(c, depth, args)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-}
-
-// exec runs the function
-func (cli cli) exec(c *lime.Command, depth int, args []string) error {
-	if c.Func == nil {
-		return errNoFunc
-	}
-
-	return c.Func(args[depth+1:])
+	return exec(c, depth, os.Args)
 }
