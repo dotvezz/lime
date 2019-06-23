@@ -71,7 +71,7 @@ func (cli cli) Run() error {
 	// Go to shell mode if it's not disabled and there are no args
 	if len(os.Args) == 1 {
 		if *cli.options&options.NoShell == 0 {
-			return cli.shell()
+			cli.shell()
 		}
 		return errors.ErrNoInput
 	}
@@ -100,23 +100,23 @@ func match(commands []lime.Command, args []string, depth int) (*lime.Command, in
 }
 
 // shell launches the cli in an interactive shell
-func (cli cli) shell() error {
-	reader := bufio.NewReader(os.Stdin)
+func (cli cli) shell() {
 	fmt.Print("entering shell mode")
 	if len(*cli.name) > 1 {
-		fmt.Println("for", *cli.name)
+		fmt.Println(" for", *cli.name)
 	} else {
 		fmt.Println()
 	}
 
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf("%s ", *cli.prompt)
-		input, _ := reader.ReadString('\n')
-		input = strings.Replace(input, "\n", "", -1)
-		if input == *cli.exitWord {
+		scanner.Scan()
+		input := scanner.Text()
+		if string(input) == *cli.exitWord {
 			break
 		}
-		args := strings.Split(input, " ")
+		args := strings.Split(string(input), " ")
 		c, depth, err := match(*cli.commands, args, 0)
 		if err != nil {
 			if err != errors.ErrNoMatch || len(input) > 0 {
@@ -129,7 +129,6 @@ func (cli cli) shell() error {
 			fmt.Println(err)
 		}
 	}
-	return nil
 }
 
 // exec runs the function
