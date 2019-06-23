@@ -39,7 +39,7 @@ func TestCLI_RunShell(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		_ = c.Run()
+		c.Run()
 		wg.Done()
 	}()
 
@@ -90,7 +90,7 @@ func TestCLI_RunNamedShell(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		_ = c.Run()
+		c.Run()
 		wg.Done()
 	}()
 

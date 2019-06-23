@@ -2,6 +2,7 @@ package cli
 
 import (
 	"flag"
+	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/options"
 	"os"
@@ -64,29 +65,40 @@ func (cli cli) SetExitWord(exitWord string) {
 }
 
 // Run finds a matching Command for the arguments given and invokes its Func.
-func (cli cli) Run() error {
+func (cli cli) Run() {
 	// Go to shell mode if it's not disabled and there are no args
 	if len(os.Args) == 1 {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
-		return errNoInput
+		_, _ = fmt.Fprintln(os.Stderr, errNoInput.Error())
+		os.Exit(1)
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
 
+	// Custom flag.Usage for extended help output
 	flag.Usage = func() {
 		if err == nil {
-			_ = help(c, false, os.Args)
+			_ = help(c, os.Args)
 		} else {
 			cli.help()
 		}
 		os.Exit(0)
 	}
 	flag.Parse()
-
-	if err != nil {
-		return err
+	if triggerHelp(os.Args) {
+		flag.Usage()
 	}
 
-	return exec(c, depth, os.Args)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
+	}
+
+	err = exec(c, depth, os.Args)
+
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
+	}
 }

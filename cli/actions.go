@@ -15,36 +15,54 @@ func exec(c *lime.Command, depth int, args []string) error {
 	return c.Func(args[depth+1:])
 }
 
-func help(c *lime.Command, withUsage bool, args []string) error {
-	if len(c.Help) == 0 {
+func help(c *lime.Command, args []string) error {
+	if len(c.Help) == 0 && len(c.Description) == 0 && len(c.Usage) == 0 {
+		fmt.Println("No information for this command")
 		return errNoHelp
 	}
 
-	fmt.Println(c.Description)
-	fmt.Println(c.Help)
-
-	if !withUsage && len(c.Usage) > 0 {
-		fmt.Printf("\nFor examples about this command, try %s --usage\n", strings.Join(args, " "))
+	if len(c.Description) > 0 {
+		fmt.Println(c.Description)
 	}
+
+	if len(c.Help) > 0 {
+		fmt.Println(c.Help)
+	}
+
+	for i := range c.Usage {
+		fmt.Println()
+		fmt.Println(" > ", c.Usage[i].Example)
+		fmt.Println("   ", c.Usage[i].Explanation)
+	}
+
+	fmt.Println()
 
 	return nil
 }
 
-func usage(c *lime.Command, withHelp bool, args []string) error {
-	if len(c.Usage) == 0 {
-		return errNoUsage
-	}
-	fmt.Println(c.Description)
-
-	for _, usage := range c.Usage {
-		fmt.Println(usage.Example)
-		fmt.Println(usage.Explanation)
-		fmt.Println()
+// triggerHelp checks the args for any of the help flags. Returns true if there was a help flag, false otherwise
+func triggerHelp(args []string) bool {
+	for i := range args {
+		if b, ok := helpFlags[args[i]]; ok {
+			return b
+		}
 	}
 
-	if !withHelp && len(c.Usage) > 0 {
-		fmt.Printf("\nFor help about this command, try %s --help\n", strings.Join(args, " "))
+	return false
+}
+
+func describeRecursively(c *lime.Command, args []string) {
+	keyword := strings.Trim(c.Keyword, " ")
+	args = append(args, keyword)
+	if len(keyword) == 0 {
+		return
+	}
+	fmt.Println(strings.Join(args, " "))
+	if len(c.Description) > 0 {
+		fmt.Println(" - ", c.Description)
 	}
 
-	return nil
+	for _, c := range c.Commands {
+		describeRecursively(&c, args)
+	}
 }

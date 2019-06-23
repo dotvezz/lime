@@ -37,6 +37,7 @@ var commands = []lime.Command{
 					fmt.Println("The author of this cli likes to eat oranges.")
 					return nil
 				},
+				Description: "Makes a preset statement which is factually untrue.",
 			},
 			{
 				Keyword: "truth",
@@ -44,12 +45,13 @@ var commands = []lime.Command{
 					fmt.Println("The author of this cli likes to eat apples.")
 					return nil
 				},
+				Description: "Makes a preset statement which is factually true.",
 			},
 		},
 	},
 	{
 		Keyword:     "repeat",
-		Description: "repeats all the words after the command",
+		Description: "Repeats all the words after the command.",
 		Usage: []lime.Usage{
 			{
 				Example:     "mycli repeat the quick brown fox",
@@ -73,5 +75,5 @@ var commands = []lime.Command{
 func main() {
 	mycli := cli.New()
 	_ = mycli.SetCommands(commands...)
-	_ = mycli.Run()
+	mycli.Run()
 }
