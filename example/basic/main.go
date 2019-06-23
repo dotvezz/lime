@@ -50,13 +50,13 @@ var commands = []lime.Command{
 	{
 		Keyword:     "repeat",
 		Description: "repeats all the words after the command",
-		Examples: []lime.Example{
+		Usage: []lime.Usage{
 			{
-				Input:       "mycli repeat the quick brown fox",
+				Example:     "mycli repeat the quick brown fox",
 				Explanation: `outputs "[the quick brown fox]"`,
 			},
 			{
-				Input:       "mycli repeat",
+				Example:     "mycli repeat",
 				Explanation: `returns an error: "there are no words to repeat"`,
 			},
 		},

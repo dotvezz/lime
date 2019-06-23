@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"flag"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/options"
 	"os"
@@ -13,18 +14,26 @@ type cli struct {
 	name     *string
 	prompt   *string
 	exitWord *string
+	//args     []string
 }
 
 // New creates a new CLI
 func New() lime.CLI {
 	defaultPrompt := ">"
 	defaultExitWord := "exit"
+	//args := make([]string, 0)
+	//for _, arg := range os.Args {
+	//	if arg != "--usage" && arg != "--help" {
+	//		args = append(args, arg)
+	//	}
+	//}
 	return cli{
 		commands: new([]lime.Command),
 		options:  new(lime.Option),
 		name:     new(string),
 		prompt:   &defaultPrompt,
 		exitWord: &defaultExitWord,
+		//args:     args,
 	}
 }
 
@@ -72,6 +81,17 @@ func (cli cli) Run() error {
 		return errNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
+
+	flag.Usage = func() {
+		if err == nil {
+			_ = help(c, false, os.Args)
+		} else {
+			cli.help()
+		}
+		os.Exit(0)
+	}
+	flag.Parse()
+
 	if err != nil {
 		return err
 	}
