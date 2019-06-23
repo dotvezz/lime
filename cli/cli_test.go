@@ -349,7 +349,6 @@ func TestCLI_RunShell(t *testing.T) {
 	wg.Wait()
 }
 
-
 func TestCLI_RunNamedShell(t *testing.T) {
 	c := New()
 	c.SetName("myCli")
