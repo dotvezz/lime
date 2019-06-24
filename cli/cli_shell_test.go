@@ -44,7 +44,7 @@ func TestCLI_RunShell(t *testing.T) {
 	}()
 
 	if readString(outputReader) != "entering shell mode\n> " {
-		t.Error("the shell mode initialization output was unexpected")
+		t.Error("the shell mode initialization output was unexpected:")
 	}
 
 	//test empty input
@@ -90,7 +90,7 @@ func TestCLI_RunNamedShell(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		c.Run()
+		_ = c.Run()
 		wg.Done()
 	}()
 

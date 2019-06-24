@@ -5,7 +5,7 @@ type CLI interface {
 	SetOptions(opts ...Option) error
 	SetCommands(commands ...Command) error
 	SetName(name string)
-	Run()
+	Run() error
 	SetPrompt(prompt string)
 	SetExitWord(exitWord string)
 }

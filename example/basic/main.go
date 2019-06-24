@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/cli"
+	"os"
 )
 
 var command = lime.Command{
@@ -75,5 +76,8 @@ var commands = []lime.Command{
 func main() {
 	mycli := cli.New()
 	_ = mycli.SetCommands(commands...)
-	mycli.Run()
+	err := mycli.Run()
+	if err != nil {
+		os.Exit(1)
+	}
 }

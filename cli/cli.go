@@ -65,14 +65,14 @@ func (cli cli) SetExitWord(exitWord string) {
 }
 
 // Run finds a matching Command for the arguments given and invokes its Func.
-func (cli cli) Run() {
+func (cli cli) Run() error {
 	// Go to shell mode if it's not disabled and there are no args
 	if len(os.Args) == 1 {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
 		_, _ = fmt.Fprintln(os.Stderr, errNoInput.Error())
-		os.Exit(1)
+		return errNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
 
@@ -92,13 +92,12 @@ func (cli cli) Run() {
 
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	err = exec(c, depth, os.Args)
-
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
 	}
+	return err
 }
