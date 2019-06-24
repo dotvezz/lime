@@ -13,3 +13,9 @@ var errInvalidOption = errors.New("an invalid option value was given")
 
 // errNoInput is returned when Lime was unable to find args/input to use
 var errNoInput = errors.New("no command given")
+
+// errNoHelp is returned when the `Help` property is needed but not present.
+var errNoHelp = errors.New("no help provided for this command")
+
+// errNoHelp is returned when the `Help` property is needed but not present.
+var errNoUsage = errors.New("no usage provided for this command")

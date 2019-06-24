@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/cli"
+	"os"
 )
 
 var command = lime.Command{
@@ -37,6 +38,7 @@ var commands = []lime.Command{
 					fmt.Println("The author of this cli likes to eat oranges.")
 					return nil
 				},
+				Description: "Makes a preset statement which is factually untrue.",
 			},
 			{
 				Keyword: "truth",
@@ -44,19 +46,20 @@ var commands = []lime.Command{
 					fmt.Println("The author of this cli likes to eat apples.")
 					return nil
 				},
+				Description: "Makes a preset statement which is factually true.",
 			},
 		},
 	},
 	{
 		Keyword:     "repeat",
-		Description: "repeats all the words after the command",
-		Examples: []lime.Example{
+		Description: "Repeats all the words after the command.",
+		Usage: []lime.Usage{
 			{
-				Input:       "mycli repeat the quick brown fox",
+				Example:     "mycli repeat the quick brown fox",
 				Explanation: `outputs "[the quick brown fox]"`,
 			},
 			{
-				Input:       "mycli repeat",
+				Example:     "mycli repeat",
 				Explanation: `returns an error: "there are no words to repeat"`,
 			},
 		},
@@ -73,5 +76,8 @@ var commands = []lime.Command{
 func main() {
 	mycli := cli.New()
 	_ = mycli.SetCommands(commands...)
-	_ = mycli.Run()
+	err := mycli.Run()
+	if err != nil {
+		os.Exit(1)
+	}
 }

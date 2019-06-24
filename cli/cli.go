@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"flag"
+	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/options"
 	"os"
@@ -69,12 +71,35 @@ func (cli cli) Run() error {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
+		_, _ = fmt.Fprintln(os.Stderr, errNoInput.Error())
 		return errNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
+
+	// Custom flag.Usage for extended help output
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	flag.Usage = func() {
+		if err == nil {
+			_ = help(c)
+		} else {
+			cli.help()
+		}
+	}
+
+	flag.Parse()
+	if triggerHelp(os.Args) {
+		flag.Usage()
+		return nil
+	}
+
 	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 		return err
 	}
 
-	return exec(c, depth, os.Args)
+	err = exec(c, depth, os.Args)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+	}
+	return err
 }

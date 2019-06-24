@@ -17,8 +17,8 @@ type Command struct {
 	// A brief description of the command, used in all --help and --usage output
 	Description string
 	// A collection of examples and explanations for the command, used in command-specific --usage output
-	Examples []Example
-	// A brief description of the command, used in command-specific --usage and --help output
+	Usage []Usage
+	// A helpful bit of information about the command, used in all --help output
 	Help string
 	// Nested commands
 	Commands []Command
@@ -26,10 +26,10 @@ type Command struct {
 	Func Func
 }
 
-// Example defines the structure of a Examples entry
-type Example struct {
+// Usage defines the structure of a Usage entry
+type Usage struct {
 	// The example input
-	Input string
+	Example string
 	// The explanation of the example
 	Explanation string
 }
