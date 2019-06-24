@@ -30,7 +30,6 @@ func help(c *lime.Command) error {
 	}
 
 	for i := range c.Usage {
-		fmt.Println()
 		fmt.Println(" > ", c.Usage[i].Example)
 		fmt.Println("   ", c.Usage[i].Explanation)
 	}
@@ -60,7 +59,7 @@ func describeRecursively(c *lime.Command, args []string) {
 		fmt.Println(" - ", c.Description)
 	}
 
-	for _, c := range c.Commands {
-		describeRecursively(&c, args)
+	for _, com := range c.Commands {
+		describeRecursively(&com, args)
 	}
 }
