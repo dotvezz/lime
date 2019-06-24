@@ -77,17 +77,19 @@ func (cli cli) Run() error {
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
 
 	// Custom flag.Usage for extended help output
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	flag.Usage = func() {
 		if err == nil {
-			_ = help(c, os.Args)
+			_ = help(c)
 		} else {
 			cli.help()
 		}
-		os.Exit(0)
 	}
+
 	flag.Parse()
 	if triggerHelp(os.Args) {
 		flag.Usage()
+		return nil
 	}
 
 	if err != nil {

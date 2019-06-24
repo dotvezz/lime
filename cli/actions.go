@@ -15,7 +15,7 @@ func exec(c *lime.Command, depth int, args []string) error {
 	return c.Func(args[depth+1:])
 }
 
-func help(c *lime.Command, args []string) error {
+func help(c *lime.Command) error {
 	if len(c.Help) == 0 && len(c.Description) == 0 && len(c.Usage) == 0 {
 		fmt.Println("No information for this command")
 		return errNoHelp
@@ -34,8 +34,6 @@ func help(c *lime.Command, args []string) error {
 		fmt.Println(" > ", c.Usage[i].Example)
 		fmt.Println("   ", c.Usage[i].Explanation)
 	}
-
-	fmt.Println()
 
 	return nil
 }
@@ -57,8 +55,8 @@ func describeRecursively(c *lime.Command, args []string) {
 	if len(keyword) == 0 {
 		return
 	}
-	fmt.Println(strings.Join(args, " "))
 	if len(c.Description) > 0 {
+		fmt.Println(strings.Join(args, " "))
 		fmt.Println(" - ", c.Description)
 	}
 
