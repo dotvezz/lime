@@ -24,9 +24,7 @@ import (
 
 func main() {
 	var command = lime.Command{
-		// Keyword is the value that will be matched against the command line arguments
 		Keyword: "greet",
-		// Func is the function that will be run for this command.
 		Func: func(args []string) error {
 			if len(args) > 0 {
 				fmt.Printf("Hello, %s!\n", args[0])
