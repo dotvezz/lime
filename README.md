@@ -19,7 +19,7 @@ package main
 import (
 	"fmt"
 	"github.com/dotvezz/lime"
- 	"github.com/dotvezz/lime/cli"
+	"github.com/dotvezz/lime/cli"
 )
 
 func main() {
