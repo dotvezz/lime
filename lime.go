@@ -14,7 +14,7 @@ type CLI interface {
 type Command struct {
 	// The keyword which invokes this command
 	Keyword string
-	// A brief description of the command, used in all --help and --usage output
+	// A brief description of the command, used in all --help output
 	Description string
 	// A collection of examples and explanations for the command, used in command-specific --usage output
 	Usage []Usage
