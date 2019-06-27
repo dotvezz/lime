@@ -48,6 +48,7 @@ func triggerHelp(args []string) bool {
 	return false
 }
 
+// traverses a given command's Commands field, and any tree sprouting from it, to generate help for each command
 func describeRecursively(c *lime.Command, args []string) {
 	keyword := strings.Trim(c.Keyword, " ")
 	args = append(args, keyword)
