@@ -70,7 +70,7 @@ func describeRecursively(c *lime.Command, args []string) string {
 	}
 
 	for _, com := range c.Commands {
-		_, _ = fmt.Fprint(sb, describeRecursively(&com, args))
+		_, _ = sb.WriteString(describeRecursively(&com, args))
 	}
 
 	return sb.String()
