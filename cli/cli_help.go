@@ -1,13 +1,20 @@
 package cli
 
+import (
+	"fmt"
+	"strings"
+)
+
 var helpFlags = map[string]bool{
 	"-h":      true,
 	"--help":  true,
 	"--usage": true,
 }
 
-func (cli cli) help() {
+func (cli cli) help() string {
+	sb := new(strings.Builder)
 	for _, c := range *cli.commands {
-		describeRecursively(&c, make([]string, 0))
+		_, _ = fmt.Fprint(sb, describeRecursively(&c, make([]string, 0)))
 	}
+	return sb.String()
 }
