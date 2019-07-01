@@ -6,6 +6,14 @@ import (
 	"strings"
 )
 
+const (
+	noInfo            = "No information for this command\n"
+	explanationPrefix = "   "
+	examplePrefix     = " > "
+	descriptionPrefix = " - "
+	argumentSeparator = " "
+)
+
 // exec runs the Func from a `lime.Command`
 func exec(c *lime.Command, depth int, args []string) error {
 	if c.Func == nil {
@@ -15,26 +23,26 @@ func exec(c *lime.Command, depth int, args []string) error {
 	return c.Func(args[depth+1:])
 }
 
-func help(c *lime.Command) error {
+func help(c *lime.Command) (string, error) {
+	sb := new(strings.Builder)
 	if len(c.Help) == 0 && len(c.Description) == 0 && len(c.Usage) == 0 {
-		fmt.Println("No information for this command")
-		return errNoHelp
+		return noInfo, errNoHelp
 	}
 
 	if len(c.Description) > 0 {
-		fmt.Println(c.Description)
+		_, _ = fmt.Fprintln(sb, c.Description)
 	}
 
 	if len(c.Help) > 0 {
-		fmt.Println(c.Help)
+		_, _ = fmt.Fprintln(sb, c.Help)
 	}
 
 	for i := range c.Usage {
-		fmt.Println(" > ", c.Usage[i].Example)
-		fmt.Println("   ", c.Usage[i].Explanation)
+		_, _ = fmt.Fprintln(sb, examplePrefix, c.Usage[i].Example)
+		_, _ = fmt.Fprintln(sb, explanationPrefix, c.Usage[i].Explanation)
 	}
 
-	return nil
+	return sb.String(), nil
 }
 
 // triggerHelp checks the args for any of the help flags. Returns true if there was a help flag, false otherwise
@@ -49,18 +57,21 @@ func triggerHelp(args []string) bool {
 }
 
 // traverses a given command's Commands field, and any tree sprouting from it, to generate help for each command
-func describeRecursively(c *lime.Command, args []string) {
+func describeRecursively(c *lime.Command, args []string) string {
+	sb := new(strings.Builder)
 	keyword := strings.Trim(c.Keyword, " ")
 	args = append(args, keyword)
 	if len(keyword) == 0 {
-		return
+		return ""
 	}
+
 	if len(c.Description) > 0 {
-		fmt.Println(strings.Join(args, " "))
-		fmt.Println(" - ", c.Description)
+		_, _ = fmt.Fprintf(sb, "%s\n%s%s\n", strings.Join(args, argumentSeparator), descriptionPrefix, c.Description)
 	}
 
 	for _, com := range c.Commands {
-		describeRecursively(&com, args)
+		_, _ = sb.WriteString(describeRecursively(&com, args))
 	}
+
+	return sb.String()
 }

@@ -79,11 +79,13 @@ func (cli cli) Run() error {
 	// Custom flag.Usage for extended help output
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	flag.Usage = func() {
+		var helpStr string
 		if err == nil {
-			_ = help(c)
+			helpStr, _ = help(c)
 		} else {
-			cli.help()
+			helpStr = cli.help()
 		}
+		fmt.Print(helpStr)
 	}
 
 	flag.Parse()

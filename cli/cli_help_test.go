@@ -71,7 +71,7 @@ func TestCLI_Help(t *testing.T) {
 			t.Error("the `Run` method returned an error for a command that should succeed")
 		}
 
-		expect := "Usage of myCli:\nnested test\n -  A test\n"
+		expect := "Usage of myCli:\nnested test\n - A test\n"
 		if str := readString(outputReader); str != expect {
 			t.Errorf("\nExpected: \n%s\nBut Got:\n%s\n", expect, str)
 		}
