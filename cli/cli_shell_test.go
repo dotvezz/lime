@@ -94,8 +94,8 @@ func TestCLI_RunNamedShell(t *testing.T) {
 		wg.Done()
 	}()
 
-	if readString(outputReader) != "entering shell mode for myCli\n> " {
-		t.Error("the shell mode initialization output was unexpected")
+	if s := readString(outputReader); s != "entering shell mode for myCli\n> " {
+		t.Errorf("the shell mode initialization output was unexpected: %s", s)
 	}
 
 	writeLine(inputWriter, *cc.exitWord)
