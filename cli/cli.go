@@ -71,7 +71,9 @@ func (cli cli) Run() error {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
-		_, _ = fmt.Fprintln(os.Stderr, errNoInput.Error())
+		if *cli.options&options.PrintErrors > 0 {
+			_, _ = fmt.Fprintln(os.Stderr, errNoInput.Error())
+		}
 		return errNoInput
 	}
 	c, depth, err := match(*cli.commands, os.Args[1:], 1)
@@ -95,13 +97,17 @@ func (cli cli) Run() error {
 	}
 
 	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		if *cli.options&options.PrintErrors > 0 {
+			_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		}
 		return err
 	}
 
 	err = exec(c, depth, os.Args)
 	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		if *cli.options&options.PrintErrors > 0 {
+			_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		}
 	}
 	return err
 }

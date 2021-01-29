@@ -7,7 +7,9 @@ import (
 
 const (
 	// NoShell disables the shell interface
-	NoShell lime.Option = 1 << iota
+	NoShell     lime.Option = 1 << iota
+	// PrintErrors enables output of errors to stdout
+	PrintErrors
 )
 
 // IsValid returns true if the option passed is a power of 2, or returns false otherwise
