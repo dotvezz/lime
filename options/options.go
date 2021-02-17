@@ -7,7 +7,7 @@ import (
 
 const (
 	// NoShell disables the shell interface
-	NoShell     lime.Option = 1 << iota
+	NoShell lime.Option = 1 << iota
 	// PrintErrors enables output of errors to stdout
 	PrintErrors
 )

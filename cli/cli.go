@@ -65,9 +65,12 @@ func (cli cli) SetExitWord(exitWord string) {
 }
 
 // Run finds a matching Command for the arguments given and invokes its Func.
-func (cli cli) Run() error {
+func (cli cli) Run(args ...string) error {
+	if len(args) == 0 {
+		args = os.Args
+	}
 	// Go to shell mode if it's not disabled and there are no args
-	if len(os.Args) == 1 {
+	if len(args) == 1 {
 		if *cli.options&options.NoShell == 0 {
 			cli.shell()
 		}
@@ -76,10 +79,10 @@ func (cli cli) Run() error {
 		}
 		return errNoInput
 	}
-	c, depth, err := match(*cli.commands, os.Args[1:], 1)
+	c, depth, err := match(*cli.commands, args[1:], 1)
 
 	// Custom flag.Usage for extended help output
-	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	flag.CommandLine = flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flag.Usage = func() {
 		var helpStr string
 		if err == nil {
@@ -91,7 +94,7 @@ func (cli cli) Run() error {
 	}
 
 	flag.Parse()
-	if triggerHelp(os.Args) {
+	if triggerHelp(args) {
 		flag.Usage()
 		return nil
 	}
@@ -103,7 +106,7 @@ func (cli cli) Run() error {
 		return err
 	}
 
-	err = exec(c, depth, os.Args)
+	err = exec(c, depth, args)
 	if err != nil {
 		if *cli.options&options.PrintErrors > 0 {
 			_, _ = fmt.Fprintln(os.Stderr, err.Error())
