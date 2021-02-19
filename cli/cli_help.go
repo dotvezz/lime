@@ -12,7 +12,7 @@ var helpFlags = map[string]bool{
 
 func (cli cli) help() string {
 	sb := new(strings.Builder)
-	for _, c := range *cli.commands {
+	for _, c := range cli.commands {
 		_, _ = sb.WriteString(describeRecursively(&c, make([]string, 0)))
 	}
 	return sb.String()

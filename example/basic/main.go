@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dotvezz/lime"
 	"github.com/dotvezz/lime/cli"
+	"io"
 	"os"
 )
 
@@ -13,15 +14,15 @@ var command = lime.Command{
 	Commands: []lime.Command{
 		{
 			Keyword: "lie",
-			Func: func(_ []string) error {
-				fmt.Println("The author of this cli likes to eat oranges.")
+			Func: func(_ []string, out io.Writer) error {
+				fmt.Fprintln(out, "The author of this cli likes to eat oranges.")
 				return nil
 			},
 		},
 		{
 			Keyword: "truth",
-			Func: func(_ []string) error {
-				fmt.Println("The author of this cli likes to eat apples.")
+			Func: func(_ []string, out io.Writer) error {
+				fmt.Fprintln(out, "The author of this cli likes to eat apples.")
 				return nil
 			},
 		},
@@ -34,16 +35,16 @@ var commands = []lime.Command{
 		Commands: []lime.Command{
 			{
 				Keyword: "lie",
-				Func: func(_ []string) error {
-					fmt.Println("The author of this cli likes to eat oranges.")
+				Func: func(_ []string, out io.Writer) error {
+					fmt.Fprintln(out, "The author of this cli likes to eat oranges.")
 					return nil
 				},
 				Description: "Makes a preset statement which is factually untrue.",
 			},
 			{
 				Keyword: "truth",
-				Func: func(_ []string) error {
-					fmt.Println("The author of this cli likes to eat apples.")
+				Func: func(_ []string, out io.Writer) error {
+					fmt.Fprintln(out, "The author of this cli likes to eat apples.")
 					return nil
 				},
 				Description: "Makes a preset statement which is factually true.",
@@ -63,7 +64,7 @@ var commands = []lime.Command{
 				Explanation: `returns an error: "there are no words to repeat"`,
 			},
 		},
-		Func: func(args []string) error {
+		Func: func(args []string, _ io.Writer) error {
 			if len(args) == 0 {
 				return errors.New("there were no words to repeat")
 			}

@@ -1,5 +1,7 @@
 package lime
 
+import "io"
+
 // CLI is the public interface, which is exposed to packages consuming lime/cli
 type CLI interface {
 	SetOptions(opts ...Option) error
@@ -8,6 +10,8 @@ type CLI interface {
 	Run(args ...string) error
 	SetPrompt(prompt string)
 	SetExitWord(exitWord string)
+	SetOutput(w io.Writer)
+	SetErrOutput(w io.Writer)
 }
 
 // Command defines the structure of a cli command.
@@ -35,7 +39,7 @@ type Usage struct {
 }
 
 // Func is the signature of a function to run when a Command is invoked.
-type Func func(args []string) error
+type Func func(args []string, out io.Writer) error
 
 // Option is a bit mask value for setting options on a CLI
 type Option int64

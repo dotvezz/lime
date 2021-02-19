@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/dotvezz/lime"
+	"io"
 	"strings"
 )
 
@@ -15,12 +16,14 @@ const (
 )
 
 // exec runs the Func from a `lime.Command`
-func exec(c *lime.Command, depth int, args []string) error {
+func exec(c *lime.Command, depth int, args []string, out io.Writer) error {
 	if c.Func == nil {
 		return errNoFunc
 	}
-
-	return c.Func(args[depth+1:])
+	for len(args) > depth {
+		args = args[1:]
+	}
+	return c.Func(args, out)
 }
 
 func help(c *lime.Command) (string, error) {
