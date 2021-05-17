@@ -10,7 +10,7 @@ var helpFlags = map[string]bool{
 	"--usage": true,
 }
 
-func (cli cli) help() string {
+func (cli CLI) help() string {
 	sb := new(strings.Builder)
 	for _, c := range cli.commands {
 		_, _ = sb.WriteString(describeRecursively(&c, make([]string, 0)))

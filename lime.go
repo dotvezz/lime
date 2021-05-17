@@ -2,18 +2,6 @@ package lime
 
 import "io"
 
-// CLI is the public interface, which is exposed to packages consuming lime/cli
-type CLI interface {
-	SetOptions(opts ...Option) error
-	SetCommands(commands ...Command) error
-	SetName(name string)
-	Run(args ...string) error
-	SetPrompt(prompt string)
-	SetExitWord(exitWord string)
-	SetOutput(w io.Writer)
-	SetErrOutput(w io.Writer)
-}
-
 // Command defines the structure of a cli command.
 type Command struct {
 	// The keyword which invokes this command

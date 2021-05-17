@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/dotvezz/lime"
 	"io"
 	"os"
 	"testing"
+
+	"github.com/dotvezz/lime"
 )
 
 func TestCLI_Run_Basic(t *testing.T) {
@@ -30,8 +31,8 @@ func TestCLI_Run_Basic(t *testing.T) {
 		},
 		lime.Command{
 			Keyword: "repeat",
-			Func: func(args []string, _ io.Writer) error {
-				fmt.Println(args)
+			Func: func(args []string, w io.Writer) error {
+				fmt.Fprintln(w, args)
 				return nil
 			},
 		},
@@ -43,8 +44,8 @@ func TestCLI_Run_Basic(t *testing.T) {
 			Commands: []lime.Command{
 				{
 					Keyword: "test",
-					Func: func(_ []string, _ io.Writer) error {
-						fmt.Println("success")
+					Func: func(_ []string, w io.Writer) error {
+						fmt.Fprintln(w, "success")
 						return nil
 					},
 				},
@@ -87,13 +88,13 @@ func TestCLI_Run_Basic(t *testing.T) {
 		}
 	}
 
-	//// Ensure an error is returned when there is no command to run and interactive shell is disabled
+	//// Ensure an error is returned when there is no command to run and interactive is disabled
 	//{
-	//	_ = c.SetOptions(options.NoShell)
+	//	_ = c.SetOptions(options.NoInteractiveMode)
 	//	err := c.Run()
 	//
 	//	if err == nil {
-	//		t.Error("the `Run` method did not return an error with no input an shell disabled")
+	//		t.Error("the `Run` method did not return an error with no input an interactive disabled")
 	//	}
 	//
 	//	if err != nil && err.Error() != errNoInput.Error() {
@@ -162,7 +163,7 @@ func TestCLI_Run_Captured_IO(t *testing.T) {
 	// Ensure the command out and injected args behave as expected
 	{
 		outBuffer.Reset()
-		err := c.Run( "repeat", "blah")
+		err := c.Run("repeat", "blah")
 
 		if err != nil {
 			t.Error("the `Run` method returned an error for a command that should succeed")

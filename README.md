@@ -58,10 +58,10 @@ The `args` value passed to the function is a slice of `os.Args`, excluding the a
 If you would like to suggest a feature for lime to support, please 
 [open an issue](https://github.com/dotvezz/lime/issues) or submit a pull request for it.
 
-### Interactive Shell
+### Interactive Mode
 
-By default, lime gives your CLI an interactive shell. In a future release, one goal is for the 
-shell to run as an interpreter for custom scripts.
+By default, lime gives your CLI an interactive mode. In a future release, one goal is for the 
+interactive mode to run as an interpreter for custom scripts.
 
 ### Basic Command Handling
 
@@ -118,8 +118,8 @@ in the future.
 
 ### Feature Wish List
 
-- Ability for the interactive shell mode run as an interpreter for custom scripts.
-- Support for dynamic prompts in the interactive shell mode
+- Ability for the interactive mode run as an interpreter for custom scripts.
+- Support for dynamic prompts in the interactive mode
 - Support for command-line flags
 - Support for `bash` auto-completion
 

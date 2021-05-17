@@ -3,10 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/dotvezz/lime"
-	"github.com/dotvezz/lime/cli"
 	"io"
 	"os"
+
+	"github.com/dotvezz/lime"
+	"github.com/dotvezz/lime/cli"
 )
 
 var command = lime.Command{

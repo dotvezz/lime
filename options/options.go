@@ -1,13 +1,14 @@
 package options
 
 import (
-	"github.com/dotvezz/lime"
 	"math"
+
+	"github.com/dotvezz/lime"
 )
 
 const (
-	// NoShell disables the shell interface
-	NoShell lime.Option = 1 << iota
+	// NoInteractiveMode disables the interactive interface
+	NoInteractiveMode lime.Option = 1 << iota
 	// PrintErrors enables output of errors to stdout
 	PrintErrors
 )

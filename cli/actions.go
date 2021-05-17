@@ -2,9 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"github.com/dotvezz/lime"
 	"io"
 	"strings"
+
+	"github.com/dotvezz/lime"
 )
 
 const (

@@ -3,9 +3,10 @@ package cli
 import (
 	"bytes"
 	"errors"
-	"github.com/dotvezz/lime"
 	"io"
 	"testing"
+
+	"github.com/dotvezz/lime"
 )
 
 func TestCLI_Help(t *testing.T) {
@@ -73,7 +74,7 @@ func TestCLI_Help(t *testing.T) {
 	// Ensure a command with no help fails properly
 	{
 		buffer.Reset()
-		err := c.Run( "noHelp", "--help")
+		err := c.Run("noHelp", "--help")
 
 		if err != nil {
 			t.Error("the `Run` method returned an error for a command that succeed")
