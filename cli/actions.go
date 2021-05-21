@@ -21,10 +21,7 @@ func exec(c *lime.Command, depth int, args []string, out io.Writer) error {
 	if c.Func == nil {
 		return errNoFunc
 	}
-	for len(args) > depth {
-		args = args[1:]
-	}
-	return c.Func(args, out)
+	return c.Func(args[depth:], out)
 }
 
 func help(c *lime.Command) (string, error) {
