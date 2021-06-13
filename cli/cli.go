@@ -130,7 +130,7 @@ func (cli CLI) Run(args ...string) error {
 		return err
 	}
 
-	err = exec(c, depth, args, cli.out)
+	err = exec(c, args[depth:], cli.out)
 	if err != nil {
 		if cli.options&options.PrintErrors > 0 {
 			_, _ = fmt.Fprintln(cli.err, err.Error())
@@ -174,7 +174,7 @@ func (cli CLI) interactive() {
 			}
 			continue
 		}
-		err = exec(c, depth, args, cli.out)
+		err = exec(c, args[depth:], cli.out)
 		if err != nil {
 			_, _ = fmt.Fprintln(cli.out, err)
 		}

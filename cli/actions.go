@@ -17,11 +17,11 @@ const (
 )
 
 // exec runs the Func from a `lime.Command`
-func exec(c *lime.Command, depth int, args []string, out io.Writer) error {
+func exec(c *lime.Command, args []string, out io.Writer) error {
 	if c.Func == nil {
 		return errNoFunc
 	}
-	return c.Func(args[depth:], out)
+	return c.Func(args, out)
 }
 
 func help(c *lime.Command) (string, error) {
